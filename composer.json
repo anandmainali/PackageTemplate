@@ -2,6 +2,7 @@
     "name": "anand/packagetemplate",
     "description": "Creates template of package.",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Anand",
