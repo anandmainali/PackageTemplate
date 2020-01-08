@@ -24,12 +24,14 @@ class PackageTemplateServiceProvider extends ServiceProvider
     {
         require 'helpers.php';
 
-        $this->commands([
-            \Anand\PackageTemplate\Console\Commands\CreatePackage::class,
-            \Anand\PackageTemplate\Console\Commands\CreateController::class,
-            \Anand\PackageTemplate\Console\Commands\CreateMigration::class,
-            \Anand\PackageTemplate\Console\Commands\CreateModel::class,
-            \Anand\PackageTemplate\Console\Commands\CreatePolicy::class,
-        ]);
+        if($this->app->runningInConsole()) {
+            $this->commands([
+                Console\Commands\CreatePackage::class,
+                Console\Commands\CreateController::class,
+                Console\Commands\CreateMigration::class,
+                Console\Commands\CreateModel::class,
+                Console\Commands\CreatePolicy::class,
+            ]);
+        }
     }
 }
