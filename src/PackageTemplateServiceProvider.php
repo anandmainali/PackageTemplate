@@ -31,8 +31,8 @@ class PackageTemplateServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
         $this->publishes([
-            __DIR__ . './config/package.php' => config_path('package.php')
-        ], 'config');
+            __DIR__ . '/config/package.php' => config_path('package.php')
+        ], 'package-config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
