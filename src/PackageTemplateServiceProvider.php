@@ -24,7 +24,9 @@ class PackageTemplateServiceProvider extends ServiceProvider
     {
         require 'helpers.php';
 
-        if($this->app->runningInConsole()) {
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+
+        if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\Commands\CreatePackage::class,
                 Console\Commands\CreateController::class,
