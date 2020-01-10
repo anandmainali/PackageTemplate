@@ -13,6 +13,10 @@ class PackageTemplateServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/package.php',
+            'package'
+        );
     }
 
     /**
@@ -22,7 +26,13 @@ class PackageTemplateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        require 'helpers.php';
+
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+
+        $this->publishes([
+            __DIR__ . './config/package.php' => config_path('package.php')
+        ], 'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

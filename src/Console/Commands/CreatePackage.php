@@ -3,6 +3,7 @@
 namespace Anand\PackageTemplate\Console\Commands;
 
 use Illuminate\Console\Command;
+use Psr\Log\LoggerInterface;
 
 class CreatePackage extends Command
 {
@@ -20,17 +21,27 @@ class CreatePackage extends Command
      */
     protected $description = 'Creates a template for new package.';
 
-    private $path = "packages/anand/";
+    private $path;
 
-    private $vendorName = "anand";
+    private $vendorName;
+    /**
+     * @var LoggerInterface
+     */
+    private $log;
 
     /**
      * Create a new command instance.
-     *
+     * @param LoggerInterface $log
      */
-    public function __construct()
+    public function __construct(LoggerInterface $log)
     {
         parent::__construct();
+
+        $this->vendorName = config('package.vendorName');
+
+        $this->path = config('package.path') . '/' . $this->vendorName . '/';
+
+        $this->log = $log;
     }
 
     /**
@@ -42,41 +53,46 @@ class CreatePackage extends Command
     {
         $packageName = $this->argument('name');
 
-        $folders = [
-            'controllers', 'databases/migrations', 'models', 'policies', 'resources/views', 'routes'
-        ];
+        $folders = config('package.folders');
 
-        $files = [
-            'routes/web',
-        ];
+        $files = config('package.files');
 
-        if (!file_exists($this->path . $packageName)) {
+        try {
+            if (!file_exists($this->path . $packageName)) {
 
-            $this->info("================ Creating Package ======================\n");
+                $this->info("================ Creating Package ======================\n");
 
-            foreach ($folders as $folder)
-                createFolder($this->path . $packageName . '/src/', $folder);
+                if (!empty($folders)) {
+                    foreach ($folders as $folder)
+                        createFolder($this->path . $packageName . '/src/', $folder);
+                }
 
+                if (!empty($files)) {
+                    foreach ($files as $file)
+                        createFile($this->path . $packageName . '/src/', $file);
+                }
 
-            foreach ($files as $file)
-                createFile($this->path . $packageName . '/src/', $file);
+                $this->createServiceProvider($packageName, __DIR__ . '/stubs/provider.stub');
 
-            $this->createServiceProvider($packageName, __DIR__ . '/stubs/provider.stub');
+                //creates composer.json file
+                system('composer init --working-dir=' . $this->path . $packageName . ' --name=' . $this->vendorName . '/' . strtolower(getCamelCaseName($packageName)) . ' --description=' . getCamelCaseName($packageName) . '\' package\' --type=library --license=MIT --author=\'Author <info@author.com>\' -s dev');
 
-            //creates composer.json file
-            system('composer init --working-dir=' . $this->path . $packageName . ' --name=' . $this->vendorName . '/' . $packageName . ' --description=' . ucfirst($packageName) . '\' package\' --type=library --license=MIT --author=\'Dummy <info@dummy.com>\' -s dev');
+                $this->info("================ Package Created Successfully ==========\n");
+            } else {
+                $this->error("================ Package Already Exists. ======================");
+            }
+            }catch(\Exception $e){
+                $this->log->error((string)$e);
 
-            $this->info("================ Package Created Successfully ==========\n");
-        } else {
-            $this->error("================ Package Already Exists. ======================");
+                $this->error("================ Couldn't Create Package. ======================");
+            }
         }
-    }
 
     private function createServiceProvider($packageName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace', 'DummyClass'], ['RaraCMS\\' . ucfirst($packageName), ucfirst($packageName)], $stub);
-        $file = createFile($this->path . $packageName . '/src/', ucfirst($packageName) . 'ServiceProvider');
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], [getCamelCaseName($packageName), getCamelCaseName($packageName)], $stub);
+        $file = createFile($this->path . $packageName . '/src/', getCamelCaseName($packageName) . 'ServiceProvider');
         return file_put_contents($file, $stub);
     }
 }
