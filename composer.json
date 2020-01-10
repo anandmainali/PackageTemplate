@@ -1,19 +1,19 @@
 {
-    "name": "anand/packagetemplate",
-    "description": "Creates template of package.",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Anand",
-            "email": "urajmainali5@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {},
-    "autoload": {
-        "psr-4": {
-            "Anand\\PackageTemplate\\": "src/"
-        }
+  "name": "anandmainali/packagetemplate",
+  "description": "Creates template of package.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anand Mainali",
+      "email": "urajmainali5@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Anand\\PackageTemplate\\": "src/"
+    }
+  }
 }
