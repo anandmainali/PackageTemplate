@@ -42,10 +42,10 @@ class CreateModel extends Command
         $fileName = $this->argument('name');
         $packageName = $this->argument('packageName');
 
-        if (!file_exists($this->path . $packageName.'/src/models/'.$fileName.'.php')) {
+        if (!file_exists($this->path . $packageName . '/src/models/' . $fileName . '.php')) {
             $this->info("================ Creating Model ======================\n");
 
-            $this->createModel($packageName,$fileName,__DIR__.'/stubs/model.stub');
+            $this->createModel($packageName, $fileName, __DIR__ . '/stubs/model.stub');
 
             $this->info("================ Model Created Successfully ==========\n");
         } else {
@@ -53,11 +53,11 @@ class CreateModel extends Command
         }
     }
 
-    private function createModel($packageName,$fileName,$stub)
+    private function createModel($packageName, $fileName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName).'\models',$fileName],$stub);
-        $file = createFile($this->path.$packageName.'/src/models/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], ['RaraCMS\\' . ucfirst($packageName) . '\models', $fileName], $stub);
+        $file = createFile($this->path . $packageName . '/src/models/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

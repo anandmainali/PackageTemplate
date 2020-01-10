@@ -43,10 +43,10 @@ class CreateMigration extends Command
         $tableName = $this->argument('tableName');
         $packageName = $this->argument('packageName');
 
-        if (!file_exists($this->path . $packageName.'/src/databases/migrations/'.$fileName.'.php')) {
+        if (!file_exists($this->path . $packageName . '/src/databases/migrations/' . $fileName . '.php')) {
             $this->info("================ Creating Migration ======================\n");
 
-            $this->createMigration($packageName,$fileName,$tableName,__DIR__.'/stubs/migration-create.stub');
+            $this->createMigration($packageName, $fileName, $tableName, __DIR__ . '/stubs/migration-create.stub');
 
             $this->info("================ Migration Created Successfully ==========\n");
         } else {
@@ -55,11 +55,11 @@ class CreateMigration extends Command
     }
 
 
-    private function createMigration($packageName,$fileName,$tableName,$stub)
+    private function createMigration($packageName, $fileName, $tableName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyClass','DummyTable'],[$fileName,$tableName],$stub);
-        $file = createFile($this->path.$packageName.'/src/databases/migrations/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyClass', 'DummyTable'], [$fileName, $tableName], $stub);
+        $file = createFile($this->path . $packageName . '/src/databases/migrations/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

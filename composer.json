@@ -14,7 +14,10 @@
   "autoload": {
     "psr-4": {
       "Anand\\PackageTemplate\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "extra": {
     "laravel": {

@@ -42,10 +42,10 @@ class CreatePolicy extends Command
         $fileName = $this->argument('name');
         $packageName = $this->argument('packageName');
 
-        if (!file_exists($this->path . $packageName.'/src/policies/'.$fileName.'.php')) {
+        if (!file_exists($this->path . $packageName . '/src/policies/' . $fileName . '.php')) {
             $this->info("================ Creating Policy ======================\n");
 
-            $this->createPolicy($packageName,$fileName,__DIR__.'/stubs/policy.plain.stub');
+            $this->createPolicy($packageName, $fileName, __DIR__ . '/stubs/policy.plain.stub');
 
             $this->info("================ Policy Created Successfully ==========\n");
         } else {
@@ -53,11 +53,11 @@ class CreatePolicy extends Command
         }
     }
 
-    private function createPolicy($packageName,$fileName,$stub)
+    private function createPolicy($packageName, $fileName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName).'\policies',$fileName],$stub);
-        $file = createFile($this->path.$packageName.'/src/policies/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], ['RaraCMS\\' . ucfirst($packageName) . '\policies', $fileName], $stub);
+        $file = createFile($this->path . $packageName . '/src/policies/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

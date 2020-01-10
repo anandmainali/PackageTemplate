@@ -11,7 +11,7 @@ class CreateController extends Command
      *
      * @var string
      */
-    protected $signature = 'create:controller {name : Provide Controller Name} {packageName : Enter package name to create file inside that package.} {--r}';
+    protected $signature = 'create:controller {name : Provide Controller Name} {packageName : Enter package name to create file inside that package.} {--r : Creates controller with resource.}';
 
     /**
      * The console command description.
@@ -21,6 +21,8 @@ class CreateController extends Command
     protected $description = 'Creates Controller inside the package.';
 
     private $path = 'packages/raracms/';
+
+    private $vendorName = "raracms";
 
     /**
      * Create a new command instance.
@@ -43,13 +45,13 @@ class CreateController extends Command
         $packageName = $this->argument('packageName');
         $resource = $this->option('r');
 
-        if (!file_exists($this->path . $packageName.'/src/controllers/'.$fileName.'.php')) {
+        if (!file_exists($this->path . $packageName . '/src/controllers/' . $fileName . '.php')) {
             $this->info("================ Creating Controller ======================\n");
 
-            if($resource){
-                $this->createController($packageName,$fileName,__DIR__.'/stubs/resource-controller.stub');
-            }else{
-                $this->createController($packageName,$fileName,__DIR__.'/stubs/controller.plain.stub');
+            if ($resource) {
+                $this->createController($packageName, $fileName, __DIR__ . '/stubs/resource-controller.stub');
+            } else {
+                $this->createController($packageName, $fileName, __DIR__ . '/stubs/controller.plain.stub');
             }
 
             $this->info("================ Controller Created Successfully ==========\n");
@@ -58,11 +60,11 @@ class CreateController extends Command
         }
     }
 
-    private function createController($packageName,$fileName,$stub)
+    private function createController($packageName, $fileName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName).'\controllers',$fileName],$stub);
-        $file = createFile($this->path.$packageName.'/src/controllers/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], ['RaraCMS\\' . ucfirst($packageName) . '\controllers', $fileName], $stub);
+        $file = createFile($this->path . $packageName . '/src/controllers/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

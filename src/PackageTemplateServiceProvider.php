@@ -22,8 +22,6 @@ class PackageTemplateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        require 'helpers.php';
-
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
         if ($this->app->runningInConsole()) {

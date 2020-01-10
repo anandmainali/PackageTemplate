@@ -20,9 +20,9 @@ class CreatePackage extends Command
      */
     protected $description = 'Creates a template for new package.';
 
-    private $vendorName = "anand";
-
     private $path = "packages/anand/";
+
+    private $vendorName = "anand";
 
     /**
      * Create a new command instance.
@@ -75,7 +75,7 @@ class CreatePackage extends Command
     private function createServiceProvider($packageName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace', 'DummyClass'], [$this->vendorName . '\\' . ucfirst($packageName), ucfirst($packageName)], $stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], ['RaraCMS\\' . ucfirst($packageName), ucfirst($packageName)], $stub);
         $file = createFile($this->path . $packageName . '/src/', ucfirst($packageName) . 'ServiceProvider');
         return file_put_contents($file, $stub);
     }
