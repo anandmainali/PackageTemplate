@@ -3,7 +3,6 @@
 namespace Anand\PackageTemplate\Console\Commands;
 
 use Illuminate\Console\Command;
-use Psr\Log\LoggerInterface;
 
 class CreatePackage extends Command
 {
@@ -19,23 +18,19 @@ class CreatePackage extends Command
      *
      * @var string
      */
-    protected $description = 'Creates a new package for RaraCMS.';
-    /**
-     * @var LoggerInterface
-     */
-    private $log;
+    protected $description = 'Creates a template for new package.';
 
-    private $path = "packages/raracms/";
+    private $vendorName = "anand";
+
+    private $path = "packages/anand/";
 
     /**
      * Create a new command instance.
      *
-     * @param LoggerInterface $log
      */
-    public function __construct(LoggerInterface $log)
+    public function __construct()
     {
         parent::__construct();
-        $this->log = $log;
     }
 
     /**
@@ -47,19 +42,12 @@ class CreatePackage extends Command
     {
         $packageName = $this->argument('name');
 
-        $bladePath = 'resources/views';
-
         $folders = [
-            'controllers', 'databases/migrations', 'models', 'policies', $bladePath, 'routes'
+            'controllers', 'databases/migrations', 'models', 'policies', 'resources/views', 'routes'
         ];
 
         $files = [
-            'routes/cms',
-            ucfirst($packageName) . 'Permission',
-            $bladePath.'/create.blade',
-            $bladePath.'/edit.blade',
-            $bladePath.'/form.blade',
-            $bladePath.'/index.blade',
+            'routes/web',
         ];
 
         if (!file_exists($this->path . $packageName)) {
@@ -67,14 +55,16 @@ class CreatePackage extends Command
             $this->info("================ Creating Package ======================\n");
 
             foreach ($folders as $folder)
-                createFolder($this->path.$packageName . '/src/' ,$folder);
+                createFolder($this->path . $packageName . '/src/', $folder);
+
 
             foreach ($files as $file)
-                createFile($this->path.$packageName . '/src/',$file);
+                createFile($this->path . $packageName . '/src/', $file);
 
-            $this->createServiceProvider($packageName,__DIR__.'/stubs/provider.stub');
+            $this->createServiceProvider($packageName, __DIR__ . '/stubs/provider.stub');
+
             //creates composer.json file
-//            system('composer init --working-dir=' . $this->path . $packageName . ' --name=raracms/' . $packageName . ' --description=' . ucfirst($packageName) . '\' module for RaraCMS V2\' --type=library --license=SoftNEP --author=\'SoftNEP <info@softnep.com>\' -s dev --require=\'spatie/laravel-permission\':\'dev-master\'');
+            system('composer init --working-dir=' . $this->path . $packageName . ' --name=' . $this->vendorName . '/' . $packageName . ' --description=' . ucfirst($packageName) . '\' package\' --type=library --license=MIT --author=\'Dummy <info@dummy.com>\' -s dev');
 
             $this->info("================ Package Created Successfully ==========\n");
         } else {
@@ -82,13 +72,11 @@ class CreatePackage extends Command
         }
     }
 
-    private function createServiceProvider($packageName,$stub)
+    private function createServiceProvider($packageName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName),ucfirst($packageName)],$stub);
-        $file = createFile($this->path.$packageName.'/src/',ucfirst($packageName).'ServiceProvider');
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], [$this->vendorName . '\\' . ucfirst($packageName), ucfirst($packageName)], $stub);
+        $file = createFile($this->path . $packageName . '/src/', ucfirst($packageName) . 'ServiceProvider');
+        return file_put_contents($file, $stub);
     }
 }
-
-
