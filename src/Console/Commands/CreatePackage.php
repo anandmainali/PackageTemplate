@@ -81,12 +81,12 @@ class CreatePackage extends Command
             } else {
                 $this->error("================ Package Already Exists. ======================");
             }
-            }catch(\Exception $e){
-                $this->log->error((string)$e);
+        } catch (\Exception $e) {
+            $this->log->error((string) $e);
 
-                $this->error("================ Couldn't Create Package. ======================");
-            }
+            $this->error("================ Couldn't Create Package. ======================");
         }
+    }
 
     private function createServiceProvider($packageName, $stub)
     {

@@ -4,7 +4,7 @@ return [
 
   'path' => 'packages',
 
-  'vendorName' => "raracms",
+  'vendorName' => "VendorName",
 
   'folders' => [
     'controllers', 'databases/migrations', 'models', 'policies', 'resources/views', 'routes'
