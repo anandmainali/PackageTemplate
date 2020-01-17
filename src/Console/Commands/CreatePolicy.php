@@ -3,6 +3,8 @@
 namespace Anand\PackageTemplate\Console\Commands;
 
 use Illuminate\Console\Command;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class CreatePolicy extends Command
 {
@@ -20,16 +22,21 @@ class CreatePolicy extends Command
      */
     protected $description = 'Creates Policy inside package.';
 
-    private $path = 'packages/raracms/';
+    private $path;
+    /**
+     * @var LoggerInterface
+     */
+    private $log;
 
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param LoggerInterface $log
      */
-    public function __construct()
+    public function __construct(LoggerInterface $log)
     {
         parent::__construct();
+        $this->log = $log;
     }
 
     /**
@@ -42,22 +49,28 @@ class CreatePolicy extends Command
         $fileName = $this->argument('name');
         $packageName = $this->argument('packageName');
 
-        if (!file_exists($this->path . $packageName.'/src/policies/'.$fileName.'.php')) {
+        try{
+        if (!file_exists($this->path . $packageName . '/src/policies/' . $fileName . '.php')) {
             $this->info("================ Creating Policy ======================\n");
 
-            $this->createPolicy($packageName,$fileName,__DIR__.'/stubs/policy.plain.stub');
+            $this->createPolicy($packageName, $fileName, __DIR__ . '/stubs/policy.plain.stub');
 
             $this->info("================ Policy Created Successfully ==========\n");
         } else {
             $this->error("================ Policy Already Exists. ======================");
         }
+        }catch (\Exception $e){
+            $this->log->error((string)$e);
+
+            $this->error("================ Couldn't create Controller. ======================");
+        }
     }
 
-    private function createPolicy($packageName,$fileName,$stub)
+    private function createPolicy($packageName, $fileName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName).'\policies',$fileName],$stub);
-        $file = createFile($this->path.$packageName.'/src/policies/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], [getCamelCaseName($packageName) . '\policies', $fileName], $stub);
+        $file = createFile($this->path . $packageName . '/src/policies/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "anandmainali/packagetemplate",
-  "description": "Creates template of package.",
+  "description": "Creates a template of package.",
   "type": "library",
   "license": "MIT",
   "authors": [

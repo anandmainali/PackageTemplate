@@ -3,6 +3,7 @@
 namespace Anand\PackageTemplate\Console\Commands;
 
 use Illuminate\Console\Command;
+use Psr\Log\LoggerInterface;
 
 class CreateModel extends Command
 {
@@ -20,16 +21,23 @@ class CreateModel extends Command
      */
     protected $description = 'Creates model inside package';
 
-    private $path = 'packages/raracms/';
+    private $path;
+    /**
+     * @var LoggerInterface
+     */
+    private $log;
 
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param LoggerInterface $log
      */
-    public function __construct()
+    public function __construct(LoggerInterface $log)
     {
         parent::__construct();
+
+        $this->path = config('package.path') . '/' . config('package.vendorName') . '/';
+        $this->log = $log;
     }
 
     /**
@@ -42,22 +50,28 @@ class CreateModel extends Command
         $fileName = $this->argument('name');
         $packageName = $this->argument('packageName');
 
-        if (!file_exists($this->path . $packageName.'/src/models/'.$fileName.'.php')) {
-            $this->info("================ Creating Model ======================\n");
+        try {
+            if (!file_exists($this->path . $packageName . '/src/models/' . $fileName . '.php')) {
+                $this->info("================ Creating Model ======================\n");
 
-            $this->createModel($packageName,$fileName,__DIR__.'/stubs/model.stub');
+                $this->createModel($packageName, $fileName, __DIR__ . '/stubs/model.stub');
 
-            $this->info("================ Model Created Successfully ==========\n");
-        } else {
-            $this->error("================ Model Already Exists. ======================");
+                $this->info("================ Model Created Successfully ==========\n");
+            } else {
+                $this->error("================ Model Already Exists. ======================");
+            }
+        } catch (\Exception $e) {
+            $this->log->error((string)$e);
+
+            $this->error("================ Couldn't create Model. ======================");
         }
     }
 
-    private function createModel($packageName,$fileName,$stub)
+    private function createModel($packageName, $fileName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName).'\models',$fileName],$stub);
-        $file = createFile($this->path.$packageName.'/src/models/',$fileName);
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], [getCamelCaseName($packageName) . '\models', $fileName], $stub);
+        $file = createFile($this->path . $packageName . '/src/models/', $fileName);
+        return file_put_contents($file, $stub);
     }
 }

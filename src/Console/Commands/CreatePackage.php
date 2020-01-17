@@ -19,22 +19,28 @@ class CreatePackage extends Command
      *
      * @var string
      */
-    protected $description = 'Creates a new package for RaraCMS.';
+    protected $description = 'Creates a template for new package.';
+
+    private $path;
+
+    private $vendorName;
     /**
      * @var LoggerInterface
      */
     private $log;
 
-    private $path = "packages/raracms/";
-
     /**
      * Create a new command instance.
-     *
      * @param LoggerInterface $log
      */
     public function __construct(LoggerInterface $log)
     {
         parent::__construct();
+
+        $this->vendorName = config('package.vendorName');
+
+        $this->path = config('package.path') . '/' . $this->vendorName . '/';
+
         $this->log = $log;
     }
 
@@ -47,48 +53,46 @@ class CreatePackage extends Command
     {
         $packageName = $this->argument('name');
 
-        $bladePath = 'resources/views';
+        $folders = config('package.folders');
 
-        $folders = [
-            'controllers', 'databases/migrations', 'models', 'policies', $bladePath, 'routes'
-        ];
+        $files = config('package.files');
 
-        $files = [
-            'routes/cms',
-            ucfirst($packageName) . 'Permission',
-            $bladePath.'/create.blade',
-            $bladePath.'/edit.blade',
-            $bladePath.'/form.blade',
-            $bladePath.'/index.blade',
-        ];
+        try {
+            if (!file_exists($this->path . $packageName)) {
 
-        if (!file_exists($this->path . $packageName)) {
+                $this->info("================ Creating Package ======================\n");
 
-            $this->info("================ Creating Package ======================\n");
+                if (!empty($folders)) {
+                    foreach ($folders as $folder)
+                        createFolder($this->path . $packageName . '/src/', $folder);
+                }
 
-            foreach ($folders as $folder)
-                createFolder($this->path.$packageName . '/src/' ,$folder);
+                if (!empty($files)) {
+                    foreach ($files as $file)
+                        createFile($this->path . $packageName . '/src/', $file);
+                }
 
-            foreach ($files as $file)
-                createFile($this->path.$packageName . '/src/',$file);
+                $this->createServiceProvider($packageName, __DIR__ . '/stubs/provider.stub');
 
-            $this->createServiceProvider($packageName,__DIR__.'/stubs/provider.stub');
-            //creates composer.json file
-//            system('composer init --working-dir=' . $this->path . $packageName . ' --name=raracms/' . $packageName . ' --description=' . ucfirst($packageName) . '\' module for RaraCMS V2\' --type=library --license=SoftNEP --author=\'SoftNEP <info@softnep.com>\' -s dev --require=\'spatie/laravel-permission\':\'dev-master\'');
+                //creates composer.json file
+                system('composer init --working-dir=' . $this->path . $packageName . ' --name=' . $this->vendorName . '/' . strtolower(getCamelCaseName($packageName)) . ' --description=' . getCamelCaseName($packageName) . '\' package\' --type=library --license=MIT --author=\'Author <info@author.com>\' -s dev');
 
-            $this->info("================ Package Created Successfully ==========\n");
-        } else {
-            $this->error("================ Package Already Exists. ======================");
+                $this->info("================ Package Created Successfully ==========\n");
+            } else {
+                $this->error("================ Package Already Exists. ======================");
+            }
+        } catch (\Exception $e) {
+            $this->log->error((string) $e);
+
+            $this->error("================ Couldn't Create Package. ======================");
         }
     }
 
-    private function createServiceProvider($packageName,$stub)
+    private function createServiceProvider($packageName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyNamespace','DummyClass'],['RaraCMS\\'.ucfirst($packageName),ucfirst($packageName)],$stub);
-        $file = createFile($this->path.$packageName.'/src/',ucfirst($packageName).'ServiceProvider');
-        return file_put_contents($file,$stub);
+        $stub = str_replace(['DummyNamespace', 'DummyClass'], [getCamelCaseName($packageName), getCamelCaseName($packageName)], $stub);
+        $file = createFile($this->path . $packageName . '/src/', getCamelCaseName($packageName) . 'ServiceProvider');
+        return file_put_contents($file, $stub);
     }
 }
-
-
