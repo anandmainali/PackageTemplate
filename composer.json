@@ -1,12 +1,20 @@
 {
   "name": "anandmainali/packagetemplate",
-  "description": "Creates a template of package.",
-  "type": "library",
+  "description": "Make your package development easier with package template.",
+"keywords": [
+        "anandmainali",
+        "package",
+        "template",
+        "laravel"
+    ],
+   "homepage": "https://github.com/anandmainali/PackageTemplate",
   "license": "MIT",
   "authors": [
     {
       "name": "Anand Mainali",
-      "email": "urajmainali5@gmail.com"
+      "email": "urajmainali5@gmail.com",
+      "homepage": "https://anandmainali.com.np",
+      "role": "Developer" 	
     }
   ],
   "minimum-stability": "dev",
