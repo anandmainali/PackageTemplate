@@ -36,6 +36,8 @@ class CreatePolicy extends Command
     public function __construct(LoggerInterface $log)
     {
         parent::__construct();
+
+        $this->path = config('package.path') . '/' . config('package.vendorName') . '/';
         $this->log = $log;
     }
 
