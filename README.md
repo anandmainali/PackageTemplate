@@ -69,4 +69,5 @@ create:model ModelName PackageName
 create:controller ControllerName PackageName --r //--r is optional. It is used to create resource controller.
 create:migration MigrationName TableName PackageName
 create:policy PolicyName PackageName
+create:command CommandName --command=command:name PackageName
 ```
