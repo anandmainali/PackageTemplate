@@ -12,7 +12,7 @@ class CreateController extends Command
      *
      * @var string
      */
-    protected $signature = 'create:controller {name : Provide Controller Name} {packageName : Enter package name to create file inside that package.} {--r : Creates controller with resource.}';
+    protected $signature = 'create:controller {name : Provide Controller Name} {packageName : Enter package name to create file inside that package} {--r : Creates controller with resource}';
 
     /**
      * The console command description.
@@ -52,6 +52,8 @@ class CreateController extends Command
         $resource = $this->option('r');
 
         try {
+            createFolder($this->path . $packageName . '/src/', 'controllers');
+
             if (!file_exists($this->path . $packageName . '/src/controllers/' . $fileName . '.php')) {
                 $this->info("================ Creating Controller ======================\n");
 

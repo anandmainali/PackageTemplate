@@ -67,6 +67,9 @@ class CreatePackage extends Command
                         createFolder($this->path . $packageName . '/src/', $folder);
                 }
 
+                //create config folder and files
+                $this->createConfig($packageName);
+
                 if (!empty($files)) {
                     foreach ($files as $file)
                         createFile($this->path . $packageName . '/src/', $file);
@@ -94,5 +97,13 @@ class CreatePackage extends Command
         $stub = str_replace(['DummyNamespace', 'DummyClass'], [getCamelCaseName($packageName), getCamelCaseName($packageName)], $stub);
         $file = createFile($this->path . $packageName . '/src/', getCamelCaseName($packageName) . 'ServiceProvider');
         return file_put_contents($file, $stub);
+    }
+
+    private function createConfig($packageName)
+    {
+        $stub = file_get_contents(__DIR__.'/stubs/config.stub');
+        createFolder($this->path . $packageName . '/','config');
+        $config = createFile($this->path . $packageName . '/config/','config');
+        return file_put_contents($config,$stub);
     }
 }

@@ -52,6 +52,8 @@ class CreatePolicy extends Command
         $packageName = $this->argument('packageName');
 
         try{
+            createFolder($this->path . $packageName . '/src/', 'policies');
+
         if (!file_exists($this->path . $packageName . '/src/policies/' . $fileName . '.php')) {
             $this->info("================ Creating Policy ======================\n");
 
@@ -64,7 +66,7 @@ class CreatePolicy extends Command
         }catch (\Exception $e){
             $this->log->error((string)$e);
 
-            $this->error("================ Couldn't create Controller. ======================");
+            $this->error("================ Couldn't create Policy. ======================");
         }
     }
 

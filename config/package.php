@@ -2,22 +2,22 @@
 
 return [
   /**
-   * Main folder to holds all the packages. Contains packages with VendorName. 
+   * Main folder to holds all the packages. Contains packages with VendorName.
    */
   'path' => 'packages',
-  
+
   /**
    * The VendorName will be generated inside the main folder.
    */
-  'vendorName' => "VendorName",
-  
+  'vendorName' => "vendor",
+
   /**
    * These are the folders that will be generated while creating package.
    */
   'folders' => [
-    'controllers', 'database/migrations', 'models', 'policies', 'resources/views', 'routes'
+      'resources/views', 'routes'
   ],
-  
+
   /**
    * These are the files that will be generated while creating package.
    */

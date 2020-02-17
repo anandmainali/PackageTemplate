@@ -14,7 +14,7 @@ class PackageTemplateServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/package.php',
+            __DIR__ . '/../config/package.php',
             'package'
         );
     }
@@ -31,7 +31,7 @@ class PackageTemplateServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
         $this->publishes([
-            __DIR__ . '/config/package.php' => config_path('package.php')
+            __DIR__ . '/../config/package.php' => config_path('package.php')
         ], 'package-config');
 
         if ($this->app->runningInConsole()) {
@@ -41,6 +41,7 @@ class PackageTemplateServiceProvider extends ServiceProvider
                 Console\Commands\CreateMigration::class,
                 Console\Commands\CreateModel::class,
                 Console\Commands\CreatePolicy::class,
+                Console\Commands\CreateCommand::class
             ]);
         }
     }

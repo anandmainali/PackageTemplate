@@ -52,7 +52,9 @@ class CreateMigration extends Command
         $packageName = $this->argument('packageName');
 
         try {
-            if (!file_exists($this->path . $packageName . '/src/databases/migrations/' . $fileName . '.php')) {
+            createFolder($this->path . $packageName . '/src/', 'database/migrations');
+
+            if (!file_exists($this->path . $packageName . '/src/database/migrations/' . $fileName . '.php')) {
                 $this->info("================ Creating Migration ======================\n");
 
                 $this->createMigration($packageName, $fileName, $tableName, __DIR__ . '/stubs/migration-create.stub');
@@ -73,7 +75,7 @@ class CreateMigration extends Command
     {
         $stub = file_get_contents($stub);
         $stub = str_replace(['DummyClass', 'DummyTable'], [$fileName, $tableName], $stub);
-        $file = createFile($this->path . $packageName . '/src/databases/migrations/', $fileName);
+        $file = createFile($this->path . $packageName . '/src/database/migrations/', $fileName);
         return file_put_contents($file, $stub);
     }
 }

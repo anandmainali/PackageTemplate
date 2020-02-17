@@ -51,6 +51,8 @@ class CreateModel extends Command
         $packageName = $this->argument('packageName');
 
         try {
+            createFolder($this->path . $packageName . '/src/', 'models');
+
             if (!file_exists($this->path . $packageName . '/src/models/' . $fileName . '.php')) {
                 $this->info("================ Creating Model ======================\n");
 
