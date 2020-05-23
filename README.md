@@ -43,7 +43,7 @@ return [
    * These are the folders that will be generated while creating package.
    */
   'folders' => [
-    'controllers', 'databases/migrations', 'models', 'policies', 'resources/views', 'routes'
+    'controllers', 'database/migrations', 'models', 'policies', 'resources/views', 'routes'
   ],
   
   /**
