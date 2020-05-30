@@ -74,8 +74,20 @@ class CreateMigration extends Command
     private function createMigration($packageName, $fileName, $tableName, $stub)
     {
         $stub = file_get_contents($stub);
-        $stub = str_replace(['DummyClass', 'DummyTable'], [$fileName, $tableName], $stub);
+        $className = $this->createClassName($fileName);
+        $stub = str_replace(['DummyClass', 'DummyTable'], [$className, $tableName], $stub);
         $file = createFile($this->path . $packageName . '/src/database/migrations/', $fileName);
         return file_put_contents($file, $stub);
+    }
+    
+    private function createClassName($fileName)
+    {
+        $explodedData  = explode('_',$fileName);
+        $className = '';
+        foreach($explodedData as $index=>$data){
+            if($index > 3)
+                $className .= ucfirst($data);
+        }
+        return $className;
     }
 }
