@@ -47,7 +47,7 @@ class CreateMigration extends Command
      */
     public function handle()
     {
-        $fileName = date('Y_m_d_His', time()).'_.$this->argument('fileName');
+        $fileName = date('Y_m_d_His', time()).'_'.$this->argument('fileName');
         $tableName = $this->argument('tableName');
         $packageName = $this->argument('packageName');
 
